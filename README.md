@@ -11,6 +11,7 @@ A modern, responsive calculator built collaboratively by our development team to
 *(Add your actual deployed URL here)*
 
 ---
+> Note: `.keep` files are used to ensure empty folders are committed.
 
 ## 📁 Project Structure
 
