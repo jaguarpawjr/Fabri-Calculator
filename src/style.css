@@ -1,97 +1,1469 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+  /* Main Colors */
+  --deep-space-black: #0a0a14;
+  --electric-blue: #00c3ff;
+  --holographic-silver: #e0e0e0;
+  --premium-gold: #ffd700;
+
+  /* Display Themes */
+  --matrix-green: #00ff41;
+  --ocean-blue: #0077ff;
+  --sunset-orange: #ff5e3a;
+  --pure-white: #ffffff;
+
+  /* Button Colors */
+  --number-btn-bg: #1a1a2e;
+  --function-btn-bg: #16213e;
+  --math-btn-bg: #0f3460;
+  --operation-btn-bg: #533483;
+  --action-btn-bg: #e94560;
+  --memory-btn-bg: #2c3e50;
+  --constant-btn-bg: #3a506b;
+  --brand-btn-bg: linear-gradient(135deg, #00c3ff, #533483);
+
+  /* Shadows and Effects */
+  --premium-shadow: 0 10px 25px rgba(0, 195, 255, 0.2);
+  --button-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --display-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+  --glass-effect: rgba(255, 255, 255, 0.05);
+  --button-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.03' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
-  background: black ;
+  background: linear-gradient(135deg, #0a0a14, #16213e);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: auto;
+  min-height: 100vh;
+  color: white;
+  overflow-x: hidden;
+}
+
+.calculator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 480px;
+  width: 100%;
+  padding: 20px;
+  perspective: 1000px;
+  /* Add perspective for 3D effect */
+}
+
+.calculator-brand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.brand-name {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(to right, var(--electric-blue), var(--premium-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+}
+
+.brand-model {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--holographic-silver);
+  letter-spacing: 1px;
 }
 
 .calculator {
-  background-color: #1e1e2f;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
-  width: 320px;
+  background-color: var(--deep-space-black);
+  padding: 25px;
+  border-radius: 30px;
+  box-shadow: var(--premium-shadow);
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  /* Enable 3D transformations */
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  /* Smooth transition for tilt effect */
+  transform: rotateX(0) rotateY(0);
+  /* Initial position */
+  will-change: transform;
+  /* Optimize for animations */
+  --reflection-position: 50% 50%;
+  /* Default reflection position */
+  --reflection-opacity: 0.05;
+  /* Default reflection opacity */
+}
+
+.calculator::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+/* Premium holographic effect */
+.calculator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(125deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 195, 255, 0.05) 75%,
+      rgba(255, 255, 255, 0) 100%);
+  background-size: 400% 400%;
+  border-radius: 30px;
+  z-index: 1;
+  pointer-events: none;
+  animation: holographic 15s ease infinite;
+}
+
+.display-container {
+  position: relative;
+  margin-bottom: 25px;
+  margin-top: 30px;
+  padding: 0 5px;
+  transform-style: preserve-3d;
+}
+
+/* Add a subtle glow around the display */
+.display-container::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 15px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.display-theme-selector {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  background-color: var(--deep-space-black);
+  padding: 5px 12px;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: none;
+  box-shadow: inset 0 1px 3px rgba(0, 195, 255, 0.2);
+}
+
+/* Clock display */
+.clock-display {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Roboto', monospace;
+  color: var(--electric-blue);
+  text-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
+  background-color: var(--deep-space-black);
+  padding: 5px 12px;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: none;
+  box-shadow: inset 0 1px 3px rgba(0, 195, 255, 0.2);
+  z-index: 10;
+}
+
+.clock-time {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-right: 2px;
+}
+
+.clock-time::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--electric-blue), transparent);
+  opacity: 0.5;
+}
+
+.clock-time.updating {
+  opacity: 0.7;
+  transform: translateY(-2px);
+}
+
+.clock-period {
+  font-size: 0.7rem;
+  font-weight: 400;
+  opacity: 0.8;
+  background-color: rgba(0, 195, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin-left: 2px;
+}
+
+.theme-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), transparent);
+  border-radius: 50% 50% 0 0;
+}
+
+.theme-dot.matrix {
+  background-color: var(--matrix-green);
+}
+
+.theme-dot.ocean {
+  background-color: var(--ocean-blue);
+}
+
+.theme-dot.sunset {
+  background-color: var(--sunset-orange);
+}
+
+.theme-dot.pure {
+  background-color: var(--pure-white);
+}
+
+.theme-dot.active {
+  transform: scale(1.3);
+  box-shadow: 0 0 8px currentColor;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Theme selector panel effect */
+.display-theme-selector::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), transparent);
+  border-radius: 10px 10px 0 0;
+  z-index: -1;
 }
 
 .display {
-  background-color: #f4f4f4;
-  height: 60px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  padding: 10px;
-  font-size: 1.5rem;
+  background-color: #0a0a14;
+  background-image: linear-gradient(135deg, #0a0a14 0%, #131326 100%);
+  height: 120px;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow:
+    var(--display-shadow),
+    inset 0 0 15px rgba(0, 0, 0, 0.8),
+    inset 0 0 2px rgba(0, 195, 255, 0.2),
+    0 0 0 3px rgba(0, 0, 0, 0.8),
+    0 0 10px rgba(0, 195, 255, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(8px);
+  /* Increased depth */
+  margin: 5px 0 15px;
+  /* Add some margin to separate from calculator body */
+
+  /* Add LCD-like appearance */
+  background-image:
+    linear-gradient(135deg, #0a0a14 0%, #131326 100%),
+    repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.05) 1px,
+      transparent 1px,
+      transparent 2px);
+}
+
+.display::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.02) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  border-radius: 15px 15px 0 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.display::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--electric-blue), transparent);
+  z-index: 2;
+}
+
+/* Add screen texture for more realism */
+.display-texture {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.02' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E"),
+    linear-gradient(transparent 50%, rgba(0, 0, 0, 0.1) 50%);
+  background-size: 4px 4px, 100% 2px;
+  opacity: 0.4;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 15px;
+  mix-blend-mode: overlay;
+  animation: scanline 10s linear infinite;
+}
+
+@keyframes scanline {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+
+  100% {
+    background-position: 0 0, 0 100px;
+  }
+}
+
+.display-history {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
   text-align: right;
+  height: 20px;
   overflow-x: auto;
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.display-current {
+  font-size: 1.8rem;
+  font-weight: 500;
+  text-align: right;
+  color: var(--matrix-green);
+  font-family: 'Roboto', monospace;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+  position: relative;
+  z-index: 2;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  position: relative;
+  scroll-behavior: smooth;
+  /* Add smooth scrolling */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.display-current::-webkit-scrollbar {
+  display: none;
+}
+
+/* Add cursor/insertion point */
+.display-current::after {
+  content: '|';
+  display: inline-block;
+  opacity: 1;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  font-weight: 300;
+}
+
+/* Animation for new content */
+@keyframes newContent {
+  0% {
+    opacity: 0.5;
+    transform: translateY(2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.display-current.updating {
+  animation: newContent 0.2s ease-out;
+}
+
+/* Style for error messages in the display */
+.display-current[data-error="true"] {
+  color: var(--sunset-orange) !important;
+  animation: errorBlink 1s ease-in-out;
+}
+
+@keyframes errorBlink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.ai-suggestion {
+  background-color: rgba(0, 195, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin: 0 5px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--electric-blue);
+  border: 1px solid rgba(0, 195, 255, 0.2);
+  box-shadow:
+    0 3px 15px rgba(0, 0, 0, 0.3),
+    0 0 2px rgba(0, 195, 255, 0.3),
+    inset 0 0 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 5;
+  transform: translateZ(6px);
+  backdrop-filter: blur(2px);
+}
+
+.ai-suggestion::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg,
+      rgba(0, 195, 255, 0.05) 0%,
+      rgba(0, 195, 255, 0) 50%,
+      rgba(0, 195, 255, 0.05) 100%);
+  pointer-events: none;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+/* Speaking animation for the suggestion box */
+.ai-suggestion.speaking {
+  border-color: rgba(255, 215, 0, 0.3);
+  box-shadow:
+    0 3px 15px rgba(0, 0, 0, 0.3),
+    0 0 5px rgba(255, 215, 0, 0.3),
+    inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.ai-suggestion.speaking::before {
+  background: linear-gradient(135deg,
+      rgba(255, 215, 0, 0.05) 0%,
+      rgba(0, 195, 255, 0) 50%,
+      rgba(255, 215, 0, 0.05) 100%);
+  background-size: 200% 200%;
+  animation: gradient-shift 2s infinite ease-in-out;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.ai-icon {
+  color: var(--electric-blue);
+  font-size: 1.1rem;
+  text-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
+}
+
+.ai-text {
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  text-shadow: 0 0 2px rgba(0, 195, 255, 0.3);
+  flex: 1;
+}
+
+/* AI Toggle Button */
+.ai-toggle {
+  background: none;
+  border: none;
+  color: var(--electric-blue);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-toggle:hover {
+  opacity: 1;
+  background-color: rgba(0, 195, 255, 0.1);
+}
+
+/* Hidden state for AI suggestion */
+.ai-suggestion.hidden {
+  height: 40px;
+  padding: 8px 15px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.2),
+    0 0 1px rgba(0, 195, 255, 0.2),
+    inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.ai-suggestion.hidden .ai-text {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.ai-suggestion.hidden .ai-toggle i {
+  transform: rotate(180deg);
+}
+
+/* Animation for showing/hiding */
+@keyframes suggestShow {
+  0% {
+    transform: translateZ(4px) scaleY(0.7);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateZ(6px) scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes suggestHide {
+  0% {
+    transform: translateZ(6px) scaleY(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateZ(4px) scaleY(0.7);
+    opacity: 0.7;
+  }
+}
+
+.ai-suggestion:not(.hidden) {
+  animation: suggestShow 0.3s forwards;
+}
+
+.ai-suggestion.hidden {
+  animation: suggestHide 0.3s forwards;
+}
+
+/* Transition for showing/hiding */
+.ai-suggestion {
+  transition: all 0.3s ease;
+}
+
+.ai-suggestion .ai-text {
+  transition: all 0.2s ease;
+}
+
+.ai-suggestion .ai-toggle i {
+  transition: transform 0.3s ease;
+}
+
+/* Subtle pulse animation for AI icon */
+.ai-icon i {
+  animation: ai-pulse 2s infinite ease-in-out;
+}
+
+/* Speaking animation */
+.ai-icon i.speaking {
+  animation: ai-speaking 0.8s infinite ease-in-out;
+  color: var(--premium-gold);
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+@keyframes ai-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes ai-speaking {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  25% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  75% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .button-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  gap: 10px;
+  transform: translateZ(2px);
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+/* Add subtle shadow under buttons */
+.button-row::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: -5px;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.2);
+  filter: blur(3px);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.7;
 }
 
 .button {
   flex: 1;
-  margin: 5px;
-  height: 50px;
-  font-size: 1.1rem;
+  height: 55px;
+  font-size: 1rem;
   border: none;
-  border-radius: 10px;
-  background-color: black;
-  color: rgb(206, 211, 205);
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  background-color: var(--number-btn-bg);
+  background-image: var(--button-texture);
+  color: white;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow:
+    0 6px 10px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+  transform-style: preserve-3d;
+  transform: translateZ(4px);
 }
 
-.button.number {
-  background-color: #4e5d78;
+.button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  border-radius: 12px 12px 0 0;
+  z-index: 1;
+  pointer-events: none;
 }
-/*
+
+/* Add a shine effect on hover */
+.button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: 0.5s;
+  z-index: 2;
+}
+
+.button:hover::after {
+  left: 100%;
+}
+
+.btn-text {
+  position: relative;
+  z-index: 3;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transform: translateZ(1px);
+}
+
+/* Button Types */
+.button.number {
+  background-color: var(--number-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(0, 0, 0, 0.05) 100%);
+  font-weight: 600;
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.2);
+}
+
 .button.function {
-  background-color: #7b8fa1;
+  background-color: var(--function-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+  font-size: 0.85rem;
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
 }
 
 .button.math {
-  background-color: #00aaff;
+  background-color: var(--math-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.button.operation {
+  background-color: var(--operation-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(0, 0, 0, 0.15) 100%);
+  font-weight: 600;
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.button.action {
+  background-color: var(--action-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(0, 0, 0, 0.15) 100%);
+  font-weight: 600;
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.button.memory {
+  background-color: var(--memory-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+  font-size: 0.85rem;
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.2);
 }
 
 .button.constant {
-  background-color: #8e44ad;
-}*/
+  background-color: var(--constant-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.2);
+}
 
-.button.action {
-  background-color: #e74c3c;
+.button.brand {
+  background: var(--brand-btn-bg);
+  background-image: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(0, 0, 0, 0.2) 100%);
+  font-weight: 600;
+  letter-spacing: 1px;
+  box-shadow:
+    0 5px 8px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.button.ai {
+  background: linear-gradient(135deg, #16213e, #533483);
+  color: var(--electric-blue);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 195, 255, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+  border-radius: 14px;
+}
+
+.button.ai::before {
+  background: linear-gradient(to bottom,
+      rgba(0, 195, 255, 0.1) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+  border-radius: 14px 14px 0 0;
+}
+
+.button.ai .btn-text i {
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px var(--electric-blue);
+  animation: pulse 2s infinite;
+  transform: translateZ(2px);
+}
+
+/* Style for AI button when suggestions are hidden */
+.button.ai.suggestions-hidden .btn-text i {
+  opacity: 0.5;
+  animation: none;
+}
+
+.button.ai.suggestions-hidden {
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 195, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.button.turbo {
+  background: linear-gradient(135deg, #533483, #e94560);
+  color: var(--premium-gold);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 215, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+  border-radius: 14px;
+}
+
+.button.turbo::before {
+  background: linear-gradient(to bottom,
+      rgba(255, 215, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+  border-radius: 14px 14px 0 0;
+}
+
+.button.turbo .btn-text i {
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px var(--premium-gold);
+  animation: pulse 1.5s infinite;
+  transform: translateZ(2px);
 }
 
 .button:hover {
-  transform: scale(1.05);
-  opacity: 0.9;
+  transform: translateZ(6px) translateY(-2px);
+  box-shadow:
+    0 8px 15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.2);
 }
 
+.button:hover::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: 13px;
+  background: linear-gradient(45deg, var(--electric-blue), transparent, var(--premium-gold));
+  z-index: -1;
+  animation: borderGlow 2s linear infinite;
+  opacity: 0.5;
+}
+
+.button:active {
+  transform: translateZ(2px) translateY(1px);
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1),
+    inset 0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.05s ease;
+}
+
+/* Button press animation */
+@keyframes buttonPress {
+  0% {
+    transform: translateZ(4px);
+  }
+
+  50% {
+    transform: translateZ(2px) translateY(1px);
+  }
+
+  100% {
+    transform: translateZ(4px);
+  }
+}
+
+.button.pressed {
+  animation: buttonPress 0.15s ease-in-out;
+}
+
+/* Special styling for equals button */
+.button[data-value="equals"] {
+  background: linear-gradient(135deg, #0f766e, #047857);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 255, 170, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+  transform: translateZ(5px);
+}
+
+.button[data-value="equals"]::before {
+  background: linear-gradient(to bottom,
+      rgba(0, 255, 170, 0.1) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+}
+
+.button[data-value="equals"]:hover {
+  transform: translateZ(7px) translateY(-2px);
+  box-shadow:
+    0 8px 15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 255, 170, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.button[data-value="equals"] .btn-text {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* Special styling for ON/AC button */
+.button[data-value="on"] {
+  background: linear-gradient(135deg, #991b1b, #dc2626);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 100, 100, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 1px rgba(0, 0, 0, 0.3);
+}
+
+.button[data-value="on"]::before {
+  background: linear-gradient(to bottom,
+      rgba(255, 100, 100, 0.15) 0%,
+      rgba(0, 0, 0, 0.1) 100%);
+}
+
+.button[data-value="on"]:hover {
+  box-shadow:
+    0 8px 15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 100, 100, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes borderGlow {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 3D Tilt Effect */
+.calculator.tilting {
+  box-shadow:
+    var(--premium-shadow),
+    0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* Edge highlight for 3D effect */
+.calculator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Enhanced depth effect when tilting */
+.calculator.tilting::before {
+  opacity: 0.7;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+.calculator.tilting::after {
+  animation-duration: 5s;
+}
+
+/* Enhanced button effects when in 3D tilt mode */
+.calculator.tilting .button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.calculator.tilting .button-row:nth-child(odd) .button:nth-child(odd) {
+  transform: translateZ(5px);
+}
+
+.calculator.tilting .button-row:nth-child(odd) .button:nth-child(even) {
+  transform: translateZ(6px);
+}
+
+.calculator.tilting .button-row:nth-child(even) .button:nth-child(odd) {
+  transform: translateZ(6px);
+}
+
+.calculator.tilting .button-row:nth-child(even) .button:nth-child(even) {
+  transform: translateZ(5px);
+}
+
+/* Dynamic reflection overlay for 3D effect */
+.calculator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at var(--reflection-position),
+      rgba(255, 255, 255, var(--reflection-opacity)) 0%,
+      rgba(255, 255, 255, 0) 70%);
+  z-index: 10;
+  pointer-events: none;
+  transition: all 0.1s ease;
+  border-radius: 30px;
+}
+
+.mode-row .button {
+  font-size: 0.8rem;
+  height: 45px;
+}
+
+/* Active state for function buttons */
+.button.function.active {
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.5);
+  border: 1px solid var(--electric-blue);
+}
+
+.button.ai.active {
+  background: linear-gradient(135deg, #533483, #16213e);
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.7);
+}
+
+.button.turbo.active {
+  background: linear-gradient(135deg, #e94560, #533483);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+}
+
+.calculator-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 15px;
+  padding: 0 10px;
+}
+
+.power-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tilt-mode-indicator,
+.speech-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-left: 15px;
+  color: var(--electric-blue);
+  font-size: 0.8rem;
+  animation: pulse 2s infinite;
+}
+
+.tilt-mode-indicator.active,
+.speech-toggle.active {
+  display: flex;
+}
+
+.speech-toggle {
+  display: flex;
+  /* Always show speech toggle */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.speech-toggle:hover {
+  color: var(--premium-gold);
+}
+
+.speech-toggle.muted {
+  color: rgba(255, 255, 255, 0.4);
+  animation: none;
+}
+
+.speech-toggle.muted i:before {
+  content: '\f6a9';
+  /* Font Awesome mute icon */
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+.power-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--electric-blue);
+  box-shadow: 0 0 10px var(--electric-blue);
+  animation: pulse 2s infinite;
+}
+
+.power-text {
+  font-size: 0.7rem;
+  color: var(--electric-blue);
+  letter-spacing: 1px;
+}
+
+.model-info {
+  font-size: 0.7rem;
+  color: var(--holographic-silver);
+  opacity: 0.7;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 100;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: var(--deep-space-black);
+  margin: 10% auto;
+  padding: 25px;
+  border-radius: 20px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 0 30px rgba(0, 195, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  animation: modalFadeIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h2 {
+  color: var(--electric-blue);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.close-modal {
+  color: var(--holographic-silver);
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+  color: var(--electric-blue);
+}
+
+.modal-body {
+  color: var(--holographic-silver);
+}
+
+.ai-explanation,
+.ai-suggestions {
+  margin-bottom: 20px;
+}
+
+.ai-explanation h3,
+.ai-suggestions h3 {
+  color: var(--electric-blue);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.steps-container,
+.suggestions-container {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 15px;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes holographic {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Button pressed animation */
+.button-pressed {
+  transform: scale(0.95) translateY(2px) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.05s ease !important;
+}
+
+/* Theme Colors for Display */
+.display-current.matrix {
+  color: var(--matrix-green);
+}
+
+.display-current.ocean {
+  color: var(--ocean-blue);
+}
+
+.display-current.sunset {
+  color: var(--sunset-orange);
+}
+
+.display-current.pure {
+  color: var(--pure-white);
+}
+
+/* Responsive Design */
 @media (max-width: 480px) {
-  .calculator {
+  .calculator-container {
     padding: 10px;
-    border-radius: 15px;
+  }
+
+  .calculator {
+    padding: 15px;
+    border-radius: 20px;
   }
 
   .button {
-    padding: 10px;
-    font-size: 0.75rem;
-    border-radius: 8px;
+    height: 45px;
+    font-size: 0.9rem;
   }
 
   .display {
-    font-size: 1rem;
-    height: 50px;
-    padding: 8px;
+    height: 100px;
   }
 
-  .button-grid {
-    gap: 8px;
+  .display-current {
+    font-size: 1.5rem;
+  }
+
+  .mode-row .button {
+    height: 40px;
+    font-size: 0.7rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 5% auto;
+    padding: 15px;
   }
 }

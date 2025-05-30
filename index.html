@@ -1,94 +1,189 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" type="text/css" href="src/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-   
-      <div class="calculator">
-        <div class="display"></div>
-        <div class="button-row">
-          <button class="button function">Shift</button>
-          <button class="button function">Alpha</button>
-          <div class="special-button">
-            <button class="button replay">REPLAY</button>
-            
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" type="text/css" href="src/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FABRI Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+
+  <div class="calculator-container">
+    <div class="calculator-brand">
+      <span class="brand-name">FABRI</span>
+      <span class="brand-model">PRO CALC</span>
+    </div>
+
+    <div class="calculator">
+      <div class="display-container">
+        <div class="clock-display">
+          <span class="clock-time">00:00:00</span>
+          <span class="clock-period">AM</span>
+        </div>
+        <div class="display-theme-selector">
+          <span class="theme-dot matrix active" data-theme="matrix"></span>
+          <span class="theme-dot ocean" data-theme="ocean"></span>
+          <span class="theme-dot sunset" data-theme="sunset"></span>
+          <span class="theme-dot pure" data-theme="pure"></span>
+        </div>
+        <div class="display">
+          <div class="display-texture"></div>
+          <div class="display-history"></div>
+          <div class="display-current">0</div>
+        </div>
+      </div>
+
+      <div class="ai-suggestion" id="aiSuggestion">
+        <span class="ai-icon"><i class="fas fa-brain"></i></span>
+        <span class="ai-text">Welcome to FABRI PRO CALC. How can I assist you today?</span>
+        <button class="ai-toggle" id="aiToggle" title="Hide/Show AI suggestions (CTRL+ALT+A)">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+      </div>
+
+      <!-- Mode Selection Row -->
+      <div class="button-row mode-row">
+        <button class="button function" data-value="shift"><span class="btn-text">SHIFT</span></button>
+        <button class="button function" data-value="alpha"><span class="btn-text">ALPHA</span></button>
+        <button class="button function" data-value="mode"><span class="btn-text">MODE</span></button>
+        <button class="button function" data-value="on"><span class="btn-text">ON/AC</span></button>
+        <button class="button function ai" data-value="ai"
+          title="Toggle AI Assistant (also shows/hides suggestions)"><span class="btn-text"><i
+              class="fas fa-brain"></i></span></button>
+        <button class="button function turbo" data-value="turbo"><span class="btn-text"><i
+              class="fas fa-bolt"></i></span></button>
+      </div>
+
+      <!-- Function Row 1 -->
+      <div class="button-row">
+        <button class="button math" data-value="x^2"><span class="btn-text">x²</span></button>
+        <button class="button math" data-value="sqrt"><span class="btn-text">√</span></button>
+        <button class="button math" data-value="x^3"><span class="btn-text">x³</span></button>
+        <button class="button math" data-value="cbrt"><span class="btn-text">∛</span></button>
+        <button class="button math" data-value="x^y"><span class="btn-text">xʸ</span></button>
+        <button class="button math" data-value="log"><span class="btn-text">log</span></button>
+      </div>
+
+      <!-- Function Row 2 -->
+      <div class="button-row">
+        <button class="button math" data-value="ln"><span class="btn-text">ln</span></button>
+        <button class="button math" data-value="sin"><span class="btn-text">sin</span></button>
+        <button class="button math" data-value="cos"><span class="btn-text">cos</span></button>
+        <button class="button math" data-value="tan"><span class="btn-text">tan</span></button>
+        <button class="button constant" data-value="pi"><span class="btn-text">π</span></button>
+        <button class="button constant" data-value="e"><span class="btn-text">e</span></button>
+      </div>
+
+      <!-- Function Row 3 -->
+      <div class="button-row">
+        <button class="button math" data-value="x^-1"><span class="btn-text">x⁻¹</span></button>
+        <button class="button math" data-value="("><span class="btn-text">(</span></button>
+        <button class="button math" data-value=")"><span class="btn-text">)</span></button>
+        <button class="button math" data-value=","><span class="btn-text">,</span></button>
+        <button class="button math" data-value="arrow"><span class="btn-text">→</span></button>
+        <button class="button math" data-value="eng"><span class="btn-text">ENG</span></button>
+      </div>
+
+      <!-- Memory & Operations -->
+      <div class="button-row">
+        <button class="button memory" data-value="sto"><span class="btn-text">STO</span></button>
+        <button class="button memory" data-value="rcl"><span class="btn-text">RCL</span></button>
+        <button class="button memory" data-value="m+"><span class="btn-text">M+</span></button>
+        <button class="button memory" data-value="m-"><span class="btn-text">M-</span></button>
+        <button class="button operation" data-value="divide"><span class="btn-text">÷</span></button>
+        <button class="button operation" data-value="multiply"><span class="btn-text">×</span></button>
+      </div>
+
+      <!-- Numbers & Core Ops Row 1 -->
+      <div class="button-row">
+        <button class="button number" data-value="7"><span class="btn-text">7</span></button>
+        <button class="button number" data-value="8"><span class="btn-text">8</span></button>
+        <button class="button number" data-value="9"><span class="btn-text">9</span></button>
+        <button class="button operation" data-value="subtract"><span class="btn-text">-</span></button>
+        <button class="button action" data-value="del"><span class="btn-text">DEL</span></button>
+        <button class="button action" data-value="ac"><span class="btn-text">AC</span></button>
+      </div>
+
+      <!-- Numbers & Core Ops Row 2 -->
+      <div class="button-row">
+        <button class="button number" data-value="4"><span class="btn-text">4</span></button>
+        <button class="button number" data-value="5"><span class="btn-text">5</span></button>
+        <button class="button number" data-value="6"><span class="btn-text">6</span></button>
+        <button class="button operation" data-value="add"><span class="btn-text">+</span></button>
+        <button class="button memory" data-value="ans"><span class="btn-text">ANS</span></button>
+        <button class="button action" data-value="solve"><span class="btn-text">SOLVE</span></button>
+      </div>
+
+      <!-- Numbers & Core Ops Row 3 -->
+      <div class="button-row">
+        <button class="button number" data-value="1"><span class="btn-text">1</span></button>
+        <button class="button number" data-value="2"><span class="btn-text">2</span></button>
+        <button class="button number" data-value="3"><span class="btn-text">3</span></button>
+        <button class="button action" data-value="exe"><span class="btn-text">EXE</span></button>
+        <button class="button brand" data-value="fabri"><span class="btn-text">FABRI</span></button>
+        <button class="button action" data-value="target"><span class="btn-text"><i
+              class="fas fa-bullseye"></i></span></button>
+      </div>
+
+      <!-- Numbers & Core Ops Row 4 -->
+      <div class="button-row">
+        <button class="button number" data-value="0"><span class="btn-text">0</span></button>
+        <button class="button number" data-value="00"><span class="btn-text">00</span></button>
+        <button class="button number" data-value="."><span class="btn-text">.</span></button>
+        <button class="button math" data-value="plusminus"><span class="btn-text">±</span></button>
+        <button class="button operation" data-value="equals"><span class="btn-text">=</span></button>
+        <button class="button action" data-value="graph"><span class="btn-text"><i
+              class="fas fa-chart-line"></i></span></button>
+      </div>
+    </div>
+
+    <div class="calculator-footer">
+      <div class="power-indicator">
+        <span class="power-dot"></span>
+        <span class="power-text">AI POWERED</span>
+        <span class="tilt-mode-indicator" id="tiltModeIndicator" title="3D tilt mode (CTRL+ALT+T)">
+          <i class="fas fa-cube"></i>
+          <span>3D MODE</span>
+        </span>
+        <span class="speech-toggle" id="speechToggle" title="Toggle voice (CTRL+ALT+S)">
+          <i class="fas fa-volume-up"></i>
+          <span>VOICE</span>
+        </span>
+      </div>
+      <div class="model-info">FABRI PRO CALC © 2024</div>
+    </div>
+  </div>
+
+  <!-- Modal for AI Explanations -->
+  <div class="modal" id="aiModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-brain"></i> FABRI AI Assistant</h2>
+        <span class="close-modal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="ai-explanation">
+          <h3>Step-by-Step Solution</h3>
+          <div class="steps-container">
+            <!-- Steps will be inserted here -->
           </div>
-          <button class="button function">Mode</button>
-          <button class="button function">ON</button>
         </div>
-        <div class="button-row">
-          <button class="button operation">Solve</button>
-          <button class="button math">d\dx</button>
-          </tr>
-          <button class="button math">x^{-1}</button>
-          <button class="button constant">Const</button>
+        <div class="ai-suggestions">
+          <h3>Suggested Next Steps</h3>
+          <div class="suggestions-container">
+            <!-- Suggestions will be inserted here -->
+          </div>
         </div>
-        <div class="button-row">
-          <button class="button operation">b/c</button>
-          <button class="button math">sqr</button>
-          </tr>
-          <button class="button math">x^{2}</button>
-          <button class="button math">^</button>
-          <button class="button constant">log</button>
-          <button class="button constant">In</button>
-        </div>
-        <div class="button-row">
-          <button class="button operation">(-)</button>
-          <button class="button math">""</button>
-          </tr>
-          <button class="button math" value="">hyp</button>
-          <button class="button math" value="">sin</button>
-          <button class="button constant" value="">cos</button>
-          <button class="button constant" value="">tan</button>
-        </div>
-        <div class="button-row">
-          <button class="button operation" value="">RCL</button>
-          <button class="button math" value="">ENG</button>
-          </tr>
-          <button class="button math" value="">(</button>
-          <button class="button math" value="">)</button>
-          <button class="button constant" value="">;</button>
-          <button class="button constant" value="">M+</button>
-        </div>
+      </div>
+    </div>
+  </div>
 
+</body>
 
-
-        <div class="button-row">
-          <button class="button number" value="7">7</button>
-          <button class="button number" value="8">8</button>
-          <button class="button number" value="9">9</button>
-          <button class="button action special" value="delete">DEL</button>
-          <button class="button action special" value="clear">AC</button>
-        </div>
-        <div class="button-row">
-          <button class="button number" value="4">4</button>
-          <button class="button number" value="5">5</button>
-          <button class="button number" value="6">6</button>
-          <button class="button action special" value="multiple">X</button>
-          <button class="button action special" value="divide">/</button>
-        </div>
-        <div class="button-row">
-          <button class="button number" value="1">1</button>
-          <button class="button number" value="2">2</button>
-          <button class="button number" value="3">3</button>
-          <button class="button action special" value="plus">+</button>
-          <button class="button action special" value="minus">-</button>
-        </div>
-        <div class="button-row">
-          <button class="button number" value="0">0</button>
-          <button class="button number">(.)</button>
-          <button class="button number">Exp</button>
-          <button class="button action special" >Ans</button>
-          <button class="button action special" value="results">=</button>
-        </div>
-        </div>
-
-  </body>
 </html>
