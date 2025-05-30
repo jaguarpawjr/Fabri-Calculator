@@ -1248,6 +1248,36 @@ body {
   /* Font Awesome mute icon */
 }
 
+/* Sound toggle styles */
+.sound-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 15px;
+  color: var(--electric-blue);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sound-toggle:hover {
+  color: var(--premium-gold);
+}
+
+.sound-toggle.active {
+  animation: pulse 2s infinite;
+}
+
+.sound-toggle.muted {
+  color: rgba(255, 255, 255, 0.4);
+  animation: none;
+}
+
+.sound-toggle.muted i:before {
+  content: '\f6a8';
+  /* Font Awesome music muted icon */
+}
+
 @keyframes pulse {
   0% {
     opacity: 0.5;

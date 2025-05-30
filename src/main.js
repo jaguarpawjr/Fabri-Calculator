@@ -40,11 +40,20 @@ function initCalculator() {
 
   // Add event listeners to all buttons
   document.querySelectorAll('.button').forEach(button => {
-    button.addEventListener('click', () => handleButtonClick(button));
+    button.addEventListener('click', () => {
+      // Initialize audio on first user interaction
+      if (!audioInitialized) {
+        initAudio();
+      }
 
-    // Add hover sound effect
+      handleButtonClick(button);
+    });
+
+    // Add hover sound effect (but don't play on initial load to avoid autoplay issues)
     button.addEventListener('mouseenter', () => {
-      playSound('hover');
+      if (audioInitialized) {
+        playSound('hover');
+      }
     });
   });
 
@@ -103,7 +112,32 @@ function handleButtonClick(button) {
   const buttonType = button.className.split(' ')[1]; // Get the second class (button type)
   const value = button.getAttribute('data-value');
 
-  playSound('click');
+  // Play different sounds based on button type
+  switch (buttonType) {
+    case 'number':
+      playSound('number');
+      break;
+    case 'operation':
+      playSound('operation');
+      break;
+    case 'function':
+      playSound('function');
+      break;
+    case 'action':
+      if (value === 'equals' || value === 'exe') {
+        playSound('equals');
+      } else if (value === 'ac' || value === 'del') {
+        playSound('clear');
+      } else {
+        playSound('function');
+      }
+      break;
+    case 'memory':
+      playSound('memory');
+      break;
+    default:
+      playSound('click');
+  }
 
   // Add button press animation
   button.classList.add('pressed');
@@ -513,15 +547,15 @@ function calculatePendingFunction() {
         }
         break;
       case 'sin':
-        // Use our custom sinDeg function that handles degrees correctly
+        // Use the custom sinDeg function that handles degrees correctly
         result = FabriMath.sinDeg(arg);
         break;
       case 'cos':
-        // Use our custom cosDeg function that handles degrees correctly
+        // Use the custom cosDeg function that handles degrees correctly
         result = FabriMath.cosDeg(arg);
         break;
       case 'tan':
-        // Use our custom tanDeg function that handles degrees correctly
+        // Use the custom tanDeg function that handles degrees correctly
         result = FabriMath.tanDeg(arg);
         break;
       case '1/':
@@ -1172,17 +1206,135 @@ function handleKeyboardInput(event) {
   updateDisplay();
 }
 
+// Audio context for sound effects
+let audioContext = null;
+let audioInitialized = false;
+let audioBuffers = {};
+
+// Initialize audio context
+function initAudio() {
+  if (audioInitialized) return;
+
+  try {
+    // Create audio context
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioContext = new AudioContext();
+
+    // Load sound files
+    const soundFiles = [
+      'click.wav',
+      'hover.wav',
+      'error.wav',
+      'success.wav'
+    ];
+
+    // Load each sound file
+    soundFiles.forEach(file => {
+      loadSound(file);
+    });
+
+    audioInitialized = true;
+    console.log('Audio system initialized');
+  } catch (error) {
+    console.log('Audio initialization failed:', error);
+  }
+}
+
+// Load a sound file
+function loadSound(filename) {
+  fetch(`/public/audio/${filename}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to load sound file: ${filename}`);
+      }
+      return response.arrayBuffer();
+    })
+    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+    .then(audioBuffer => {
+      audioBuffers[filename] = audioBuffer;
+      console.log(`Sound loaded: ${filename}`);
+    })
+    .catch(error => {
+      console.log(`Error loading sound: ${error.message}`);
+    });
+}
+
 // Play sound effects
 function playSound(type) {
-  // In a real implementation, we would play actual sounds
-  // For this demo, we'll just log the sound type
-  console.log(`Playing sound: ${type}`);
+  // Check if sound is enabled
+  const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+  if (!soundEnabled) return;
+
+  // Initialize audio on first user interaction if not already done
+  if (!audioInitialized) {
+    initAudio();
+    // Return early on first call since buffers won't be loaded yet
+    return;
+  }
+
+  // Resume audio context if it's suspended (browser autoplay policy)
+  if (audioContext && audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+
+  // Map of sound types to file names
+  const soundMap = {
+    'click': 'click.wav',
+    'hover': 'hover.wav',
+    'theme': 'click.wav',
+    'modal': 'click.wav',
+    'error': 'error.wav',
+    'success': 'success.wav',
+    'number': 'click.wav',
+    'operation': 'click.wav',
+    'equals': 'click.wav',
+    'clear': 'click.wav',
+    'memory': 'click.wav',
+    'function': 'click.wav'
+  };
+
+  // Get the appropriate sound file
+  const soundFile = soundMap[type] || 'click.wav';
+
+  try {
+    // Check if audio context and buffer exist
+    if (audioContext && audioBuffers[soundFile]) {
+      // Create sound source
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffers[soundFile];
+
+      // Create gain node for volume control
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 0.5; // 50% volume
+
+      // Connect nodes
+      source.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // Play the sound
+      source.start(0);
+    } else {
+      // Fallback to simple Audio API if WebAudio isn't ready
+      const audio = new Audio(`/public/audio/${soundFile}`);
+      audio.volume = 0.3;
+
+      // Mute the audio to avoid autoplay restrictions
+      audio.muted = true;
+      audio.play().then(() => {
+        // Unmute after playback has started
+        audio.muted = false;
+      }).catch(error => {
+        console.log(`Sound fallback error: ${error.message}`);
+      });
+    }
+  } catch (error) {
+    console.log(`Sound playback error: ${error.message}`);
+  }
 }
 
 // Create particle effect
 function createParticleEffect() {
   // This would create a canvas with particle animations
-  // For this demo, we'll just log that it's been created
   console.log('Particle effect created');
 }
 
@@ -1368,6 +1520,64 @@ function initSpeechToggle() {
   });
 }
 
+// Initialize sound toggle functionality
+function initSoundToggle() {
+  const soundToggle = document.getElementById('soundToggle');
+
+  // Set initial state
+  const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+  if (!soundEnabled && soundToggle) {
+    soundToggle.classList.add('muted');
+  } else {
+    soundToggle.classList.add('active');
+  }
+
+  // Function to toggle sound
+  function toggleSound() {
+    const currentState = localStorage.getItem('soundEnabled') !== 'false';
+    const newState = !currentState;
+
+    localStorage.setItem('soundEnabled', newState);
+
+    if (newState) {
+      soundToggle.classList.remove('muted');
+      soundToggle.classList.add('active');
+      showAiSuggestion('Sound effects enabled');
+
+      // Initialize audio if not already done
+      if (!audioInitialized) {
+        initAudio();
+      }
+
+      // Resume audio context if it's suspended
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+          // Play a test sound to confirm after context is resumed
+          setTimeout(() => playSound('theme'), 100);
+        });
+      } else {
+        // Play a test sound to confirm
+        playSound('theme');
+      }
+    } else {
+      soundToggle.classList.add('muted');
+      soundToggle.classList.remove('active');
+      showAiSuggestion('Sound effects disabled');
+    }
+  }
+
+  // Add click event listener
+  soundToggle.addEventListener('click', toggleSound);
+
+  // Add keyboard shortcut (CTRL+ALT+E)
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'e') {
+      toggleSound();
+      e.preventDefault();
+    }
+  });
+}
+
 // Initialize speech synthesis
 function initSpeechSynthesis() {
   // Some browsers need a manual trigger to load voices
@@ -1445,35 +1655,54 @@ function initAiSuggestionToggle() {
 
 // Play a subtle toggle sound
 function playToggleSound(isHiding) {
-  // Create a subtle sound using the Web Audio API
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  // Check if sound is enabled
+  const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+  if (!soundEnabled) return;
 
-  // Create an oscillator for a short beep
-  const oscillator = audioContext.createOscillator();
-  const gainNode = audioContext.createGain();
+  try {
+    // Use the existing audio context if available
+    const context = audioContext || new (window.AudioContext || window.webkitAudioContext)();
 
-  // Configure the sound based on whether we're hiding or showing
-  if (isHiding) {
-    // Lower pitch for hiding
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.1);
-  } else {
-    // Higher pitch for showing
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
+    // If our main audio context is suspended, resume it
+    if (context.state === 'suspended') {
+      context.resume();
+    }
+
+    // Create an oscillator for a short beep
+    const oscillator = context.createOscillator();
+    const gainNode = context.createGain();
+
+    // Configure the sound based on whether we're hiding or showing
+    if (isHiding) {
+      // Lower pitch for hiding
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(600, context.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(300, context.currentTime + 0.1);
+    } else {
+      // Higher pitch for showing
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(300, context.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(600, context.currentTime + 0.1);
+    }
+
+    gainNode.gain.setValueAtTime(0.03, context.currentTime); // Very low volume
+    gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1); // Fade out
+
+    // Connect and start
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
+
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.1);
+
+    // If we created a new context, store it for future use
+    if (!audioContext) {
+      audioContext = context;
+      audioInitialized = true;
+    }
+  } catch (error) {
+    console.log('Toggle sound error:', error);
   }
-
-  gainNode.gain.setValueAtTime(0.05, audioContext.currentTime); // Very low volume
-  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1); // Fade out
-
-  // Connect and start
-  oscillator.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-
-  oscillator.start();
-  oscillator.stop(audioContext.currentTime + 0.1);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1482,4 +1711,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initSpeechToggle();
   initSpeechSynthesis();
   initAiSuggestionToggle();
+  initSoundToggle(); // Initialize sound toggle
 });

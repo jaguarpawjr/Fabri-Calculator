@@ -266,6 +266,15 @@ Enable voice feedback to hear spoken confirmations and explanations:
 - Use the keyboard shortcut Ctrl+Alt+S to toggle voice feedback
 - When enabled, the calculator will speak button presses, results, and AI suggestions
 
+### Sound Effects
+
+Enable tactile audio feedback for button presses and interactions:
+
+- Click the SOUND indicator in the footer to toggle sound effects on/off
+- Use the keyboard shortcut Ctrl+Alt+E to toggle sound effects
+- Different buttons produce distinct sounds for a more intuitive experience
+- Sound effects enhance the calculator's premium feel and provide confirmation of button presses
+
 ### Real-time Clock
 
 The calculator displays the current time in the top-left corner:

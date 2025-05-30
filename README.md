@@ -40,7 +40,7 @@ A premium scientific calculator with AI assistance, advanced mathematical functi
 ## 🚀 Live Demo
 [🔗 View FABRI Calculator](#)  
 
-![FABRI Calculator Demo](./public/images/fabri-calculator-demo.mp4)
+![FABRI Calculator Demo](./public/images/fabri-calculator-demo.gif)
 
 ---
 
