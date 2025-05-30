@@ -559,5 +559,5 @@ For questions, suggestions, or support, please contact:
 <p align="center">
   <img src="./public/images/fabri-logo.png" alt="FABRI Logo" width="150">
   <br>
-  <em>FABRI PRO CALC © 2024</em>
+  <em>FABRI PRO CALC © 2025</em>
 </p>
